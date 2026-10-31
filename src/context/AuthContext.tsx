@@ -180,7 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return {
       success: false,
-      message: 'Koneksi ke backend sedang disiapkan. Masukkan PIN 090203 untuk langsung masuk.',
+      message: 'Koneksi ke server sedang disiapkan atau PIN salah. Silakan coba kembali.',
     };
   };
 

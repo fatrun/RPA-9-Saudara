@@ -241,11 +241,6 @@ export const PinScreen: React.FC = () => {
             )}
           </button>
         </div>
-
-        {/* Footer Hint */}
-        <div className="text-center text-[11px] text-slate-400 mt-2">
-          PIN Awal Default Sistem: <span className="font-mono font-bold text-rpaGreen-800">090203</span>
-        </div>
       </div>
     </div>
   );
