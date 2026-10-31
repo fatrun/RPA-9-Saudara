@@ -143,7 +143,18 @@ class RemotePgClient implements IDatabaseClient {
   private pool: pg.Pool;
 
   constructor(connectionString: string) {
-    this.pool = new pg.Pool({ connectionString });
+    const isCloud =
+      connectionString.includes('sslmode=') ||
+      connectionString.includes('neon.tech') ||
+      connectionString.includes('supabase.co') ||
+      connectionString.includes('render.com') ||
+      connectionString.includes('railway.app') ||
+      process.env.PGSSLMODE === 'require';
+
+    this.pool = new pg.Pool({
+      connectionString,
+      ssl: isCloud ? { rejectUnauthorized: false } : undefined,
+    });
   }
 
   async query<T = any>(sql: string, params?: any[]): Promise<QueryResult<T>> {
