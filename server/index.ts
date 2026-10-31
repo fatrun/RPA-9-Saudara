@@ -144,8 +144,8 @@ export async function startServer() {
   }
 }
 
-// Jalankan otomatis jika bukan di-import dalam test runner atau serverless (Vercel)
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+// Jalankan otomatis jika bukan di-import dalam test runner atau serverless (Vercel/Netlify)
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL && !process.env.NETLIFY) {
   startServer();
 }
 
