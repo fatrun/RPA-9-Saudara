@@ -24,6 +24,10 @@ export async function runMigrations() {
   const executedSet = new Set(executedRows.rows.map((r) => r.version));
 
   const migrationsDir = path.resolve(process.cwd(), 'server', 'db', 'migrations');
+  if (!fs.existsSync(migrationsDir)) {
+    console.log('[MIGRATE] Direktori migrasi tidak ditemukan pada filesystem serverless. Melewati migrasi berkas.');
+    return;
+  }
   const migrationFiles = fs
     .readdirSync(migrationsDir)
     .filter((f) => f.endsWith('.sql'))

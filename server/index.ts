@@ -70,24 +70,32 @@ app.use(async (req, res, next) => {
   next();
 });
 
+// Normalisasi URL untuk Netlify Functions
+app.use((req, res, next) => {
+  if (req.url.startsWith('/.netlify/functions/api')) {
+    req.url = req.url.replace('/.netlify/functions/api', '/api');
+  }
+  next();
+});
+
 // API Route Mounts
-app.use('/api/health', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/system', systemRoutes);
-app.use('/api/audit-logs', auditRoutes);
-app.use('/api/master', masterRoutes);
-app.use('/api/ayam-masuk', ayamMasukRoutes);
-app.use('/api/produksi', produksiRoutes);
-app.use('/api/stok', stokRoutes);
-app.use('/api/penggajian', penggajianRoutes);
-app.use('/api/penjualan-hq', penjualanHQRoutes);
-app.use('/api/lapak', penjualanRORoutes);
-app.use('/api/operasional', operasionalRoutes);
-app.use('/api/laporan-keuangan', laporanKeuanganRoutes);
-app.use('/api/produk-tambahan', produkTambahanRoutes);
-app.use('/api/produk-turunan', produkTurunanRoutes);
-app.use('/api/kas-pribadi', kasPribadiRoutes);
-app.use('/api/nfc', nfcRoutes);
+app.use(['/api/health', '/health'], healthRoutes);
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/system', '/system'], systemRoutes);
+app.use(['/api/audit-logs', '/audit-logs'], auditRoutes);
+app.use(['/api/master', '/master'], masterRoutes);
+app.use(['/api/ayam-masuk', '/ayam-masuk'], ayamMasukRoutes);
+app.use(['/api/produksi', '/produksi'], produksiRoutes);
+app.use(['/api/stok', '/stok'], stokRoutes);
+app.use(['/api/penggajian', '/penggajian'], penggajianRoutes);
+app.use(['/api/penjualan-hq', '/penjualan-hq'], penjualanHQRoutes);
+app.use(['/api/lapak', '/lapak'], penjualanRORoutes);
+app.use(['/api/operasional', '/operasional'], operasionalRoutes);
+app.use(['/api/laporan-keuangan', '/laporan-keuangan'], laporanKeuanganRoutes);
+app.use(['/api/produk-tambahan', '/produk-tambahan'], produkTambahanRoutes);
+app.use(['/api/produk-turunan', '/produk-turunan'], produkTurunanRoutes);
+app.use(['/api/kas-pribadi', '/kas-pribadi'], kasPribadiRoutes);
+app.use(['/api/nfc', '/nfc'], nfcRoutes);
 
 // Fallback 404 for API
 app.use('/api/*', (req, res) => {
@@ -144,8 +152,15 @@ export async function startServer() {
   }
 }
 
-// Jalankan otomatis jika bukan di-import dalam test runner atau serverless (Vercel/Netlify)
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL && !process.env.NETLIFY) {
+const isServerless = Boolean(
+  process.env.VERCEL ||
+  process.env.NETLIFY ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT
+);
+
+// Jalankan otomatis jika bukan di-import dalam test runner atau serverless (Vercel/Netlify/Lambda)
+if (process.env.NODE_ENV !== 'test' && !isServerless) {
   startServer();
 }
 
